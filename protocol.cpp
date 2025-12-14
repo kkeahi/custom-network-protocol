@@ -4,10 +4,18 @@ using namespace std;
 #include "protocol.h"
 
 void reset_result(struct serialize_result *res) {
+    res->size = 0;
     res->response = REPLY_UNSET;
 }
 
-void serialize(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct serialize_result *res) {
+void reset_message(struct message *msg) {
+    msg->version = VERSION_UNSET;
+    msg->type = TYPE_UNSET;
+    msg->payload = {};
+    msg->payload_len = 0;
+}
+
+void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct serialize_result *res) {
     reset_result(res);
 
     if (msg->version != VERSION_1) {
@@ -30,7 +38,7 @@ void serialize(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct seri
         for (int j = 0; j < MAX_PACKET_SIZE - MIN_PACKET_SIZE - dataSize; j++) {
 
             runningDataSize++;
-            buffer[MIN_PACKET_SIZE + dataSize + j] = msg->payload[i][j];
+            buffer[MIN_PACKET_SIZE + dataSize + j] = (uint8_t)msg->payload[i][j];
 
             if (msg->payload[i][j] == '\0') {
                 break;
@@ -46,13 +54,47 @@ void serialize(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct seri
     res->response = REPLY_SUCCESS;
 }
 
+void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct serialize_result *res) {
+    reset_result(res);
+    reset_message(msg);
+
+    if (buffer[0] != VERSION_1) {
+        res->response = REPLY_ERROR;
+        return;
+    }
+
+    msg->version = buffer[0];
+
+    if (buffer[1] != TYPE_DATA) {
+        res->response = REPLY_ERROR;
+        return;
+    }
+
+    msg->type = buffer[1];
+
+    std::string temp_str;
+    for (int i = MIN_PACKET_SIZE; i < MIN_PACKET_SIZE + buffer[2]; i++) {
+        if (buffer[i] == '\0') {
+            msg->payload.emplace_back(temp_str);
+            temp_str = "";
+            res->size++;
+        }
+        else {
+            temp_str += buffer[i];
+        }
+    }
+
+    msg->payload_len = msg->payload.size();
+    res->response = REPLY_SUCCESS;
+}
+
 
 
 int main() {
     message m {
         .version = VERSION_1,
         .type = TYPE_DATA,
-        .payload = {"hello", "world"},
+        .payload = {"hello\0", "world\0"},
         .payload_len = 2,
     };
 
@@ -63,8 +105,18 @@ int main() {
 
     uint8_t buf[MAX_PACKET_SIZE];
 
-    serialize(buf, &m, &res);
+    encode(buf, &m, &res);
+    std::cout << (int)res.response << '\n';
     for (int i = 0; i < res.size; i++) {
-        std::cout << int(buf[i]) << '\n';
+        std::cout << int(buf[i]) << "   ";
     }
+    std::cout << "\n ENCODED \n\n\n";
+
+    decode(buf, &m, &res);
+    std::cout << "Version: " << (int)m.version << '\n';
+    std::cout << "Type: " << (int)m.type << '\n';
+    for (int i = 0; i < m.payload_len; i++) {
+        std::cout << m.payload[i] << "  ";
+    }
+    std::cout << "\n DECODED \n\n\n";
 }

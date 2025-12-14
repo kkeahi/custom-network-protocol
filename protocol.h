@@ -8,13 +8,15 @@
 #define MAX_PACKET_SIZE 255
 
 #define VERSION_1       0x00
+#define VERSION_UNSET   0xFF
 
 #define TYPE_DATA       0x00
 #define TYPE_ACK        0x01
+#define TYPE_UNSET      0xFF
 
 #define REPLY_SUCCESS   0x00
 #define REPLY_ERROR     0x01
-#define REPLY_UNSET     0x02
+#define REPLY_UNSET     0xFF
 
 struct message {
     uint8_t version;

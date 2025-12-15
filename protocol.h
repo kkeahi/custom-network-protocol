@@ -27,7 +27,13 @@ struct message {
     int payload_len; // num of words/payloads
 };
 
-struct serialize_result {
+struct result {
     int size;
     uint8_t response;
 };
+
+void reset_result(struct result *res);
+void reset_message(struct message *msg);
+
+void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result *res);
+void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result *res);

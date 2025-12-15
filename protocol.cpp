@@ -3,7 +3,7 @@ using namespace std;
 
 #include "protocol.h"
 
-void reset_result(struct serialize_result *res) {
+void reset_result(struct result *res) {
     res->size = 0;
     res->response = REPLY_UNSET;
 }
@@ -15,7 +15,7 @@ void reset_message(struct message *msg) {
     msg->payload_len = 0;
 }
 
-void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct serialize_result *res) {
+void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result *res) {
     reset_result(res);
 
     if (msg->version != VERSION_1) {
@@ -54,7 +54,7 @@ void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct seriali
     res->response = REPLY_SUCCESS;
 }
 
-void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct serialize_result *res) {
+void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result *res) {
     reset_result(res);
     reset_message(msg);
 
@@ -92,15 +92,15 @@ void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct seriali
 
 int main() {
     message m {
-        .version = VERSION_1,
-        .type = TYPE_DATA,
-        .payload = {"hello\0", "world\0"},
-        .payload_len = 2,
+        VERSION_1,
+        TYPE_DATA,
+        {"hello\0", "world\0"},
+        2,
     };
 
-    serialize_result res {
-        .size = 0,
-        .response = REPLY_UNSET,
+    result res {
+        0,
+        REPLY_UNSET,
     };
 
     uint8_t buf[MAX_PACKET_SIZE];

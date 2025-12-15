@@ -103,27 +103,27 @@ void print_message(struct message *msg) {
     cout << "\n\n-------END MESSAGE-------\n\n";
 }
 
-int main() {
-    message m {
-        VERSION_1,
-        TYPE_DATA,
-        {"hello\0", "world\0"},
-        2,
-    };
-
-    print_message(&m);
-
-    result res {
-        0,
-        REPLY_UNSET,
-    };
-
-    uint8_t buf[MAX_PACKET_SIZE];
-
-    encode(buf, &m, &res);
-    decode(buf, &m, &res);
-
-    print_message(&m);
-
-    return 0;
-}
+// int main() {
+//    message m {
+//        VERSION_1,
+//        TYPE_DATA,
+//        {"hello\0", "world\0"},
+//        2,
+//    };
+//
+//    print_message(&m);
+//
+//    result res {
+//        0,
+//        REPLY_UNSET,
+//    };
+//
+//    uint8_t buf[MAX_PACKET_SIZE];
+//
+//    encode(buf, &m, &res);
+//    decode(buf, &m, &res);
+//
+//    print_message(&m);
+//
+//    return 0;
+//}

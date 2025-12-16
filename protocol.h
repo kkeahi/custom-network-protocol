@@ -21,8 +21,8 @@ struct message {
     uint8_t type;
     // uint16_t length; // in bytes - in buffer not struct
 
-    std::vector<std::string> payload;
     int payload_len; // num of words/payloads
+    std::vector<std::string> payload;
 };
 
 struct result {

@@ -12,8 +12,8 @@ void reset_result(struct result *res) {
 void reset_message(struct message *msg) {
     msg->version = VERSION_UNSET;
     msg->type = TYPE_UNSET;
-    msg->payload = {};
     msg->payload_len = 0;
+    msg->payload = {};
 }
 
 void encode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result *res) {
@@ -78,7 +78,6 @@ void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result 
         if (buffer[i] == '\0') {
             msg->payload.emplace_back(temp_str);
             temp_str = "";
-            res->size++;
         }
         else {
             temp_str += buffer[i];
@@ -86,6 +85,7 @@ void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result 
     }
 
     msg->payload_len = msg->payload.size();
+    res->size = MIN_PACKET_SIZE + buffer[2];
     res->response = REPLY_SUCCESS;
 }
 
@@ -93,7 +93,8 @@ void print_message(struct message *msg) {
     cout << "\n------START MESSAGE------\n";
 
     cout << "Version: " << (int)msg->version << '\n';
-    cout << "   Type: " << (int)msg->type << "\n";
+    cout << "   Type: " << (int)msg->type << '\n';
+    cout << "PL Len.: " << msg->payload_len << '\n';
 
     cout << "Payload:\n";
     for (int i = 0; i < msg->payload_len; i++) {
@@ -107,8 +108,8 @@ void print_message(struct message *msg) {
 //     message m {
 //         VERSION_1,
 //         TYPE_DATA,
-//         {"hello\0", "world\0"},
 //         2,
+//         {"hello\0", "world\0"},
 //     };
 //
 //     print_message(&m);

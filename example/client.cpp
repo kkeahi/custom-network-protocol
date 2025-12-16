@@ -30,8 +30,8 @@ int main() {
 	message msg {
 		VERSION_1,
 		TYPE_DATA,
-		{"test1\0", "test2\0"},
 		2,
+		{"test1\0", "test2\0"}
 	};
 	print_message(&msg);
 

@@ -90,40 +90,42 @@ void decode(uint8_t buffer[MAX_PACKET_SIZE], struct message *msg, struct result 
 }
 
 void print_message(struct message *msg) {
-    cout << "\n\n------START MESSAGE------\n\n";
+    cout << "\n------START MESSAGE------\n";
 
     cout << "Version: " << (int)msg->version << '\n';
-    cout << "   Type: " << (int)msg->type << "\n\n";
+    cout << "   Type: " << (int)msg->type << "\n";
 
-    cout << "_PAYLOAD_" << '\n';
+    cout << "Payload:\n";
     for (int i = 0; i < msg->payload_len; i++) {
         cout << msg->payload[i] << "  ";
     }
 
-    cout << "\n\n-------END MESSAGE-------\n\n";
+    cout << "\n-------END MESSAGE-------\n\n";
 }
 
 // int main() {
-//    message m {
-//        VERSION_1,
-//        TYPE_DATA,
-//        {"hello\0", "world\0"},
-//        2,
-//    };
+//     message m {
+//         VERSION_1,
+//         TYPE_DATA,
+//         {"hello\0", "world\0"},
+//         2,
+//     };
 //
-//    print_message(&m);
+//     print_message(&m);
 //
-//    result res {
-//        0,
-//        REPLY_UNSET,
-//    };
+//     result res {
+//         0,
+//         REPLY_UNSET,
+//     };
 //
-//    uint8_t buf[MAX_PACKET_SIZE];
+//     uint8_t buf[MAX_PACKET_SIZE];
 //
-//    encode(buf, &m, &res);
-//    decode(buf, &m, &res);
+//     // encode(buf, &m, &res);
+//     // decode(buf, &m, &res);
 //
-//    print_message(&m);
+//     reset_message(&m);
 //
-//    return 0;
-//}
+//     print_message(&m);
+//
+//     return 0;
+// }

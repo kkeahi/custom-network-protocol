@@ -1,5 +1,3 @@
-#pragma once
-
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -28,7 +26,7 @@ struct message {
 };
 
 struct result {
-    int size;
+    int size; // size of buffer
     uint8_t response;
 };
 
